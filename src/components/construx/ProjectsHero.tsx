@@ -29,7 +29,7 @@ export function ProjectsHero() {
             </h1>
             <span className="gold-rule w-28" />
             <p className="max-w-[34rem] text-sm leading-relaxed text-charcoal-foreground/85 md:text-[17px]">
-              מגוון פרויקטים בתחום הבנייה והגמר,
+              מגוון פרויקטים בתחום הבנייה והגמר,{" "}
               <br className="hidden sm:block" />
               בסטנדרטים גבוהים של איכות, בטיחות ועמידה בלוחות זמנים.
             </p>
