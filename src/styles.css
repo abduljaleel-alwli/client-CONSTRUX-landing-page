@@ -448,7 +448,7 @@
 }
 
 .lux-frame:hover {
-  --lux-glow: 1.25;
+  --lux-glow: 1.15;
 }
 .lux-frame:hover .lux-window img {
   transform: scale(1.045);
