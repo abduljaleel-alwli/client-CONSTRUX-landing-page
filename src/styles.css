@@ -61,10 +61,14 @@
   --radius: 0.25rem;
 
   /* Materials */
-  --plaster: oklch(0.905 0.03 78);
-  --plaster-light: oklch(0.945 0.022 82);
-  --plaster-deep: oklch(0.8 0.045 74);
-  --plaster-shadow: oklch(0.6 0.05 65);
+  --plaster: oklch(0.905 0.024 74);
+  --plaster-light: oklch(0.945 0.018 78);
+  --plaster-deep: oklch(0.8 0.035 70);
+  --plaster-shadow: oklch(0.6 0.04 62);
+  --wood-light: oklch(0.82 0.11 74);
+  --wood: oklch(0.66 0.125 62);
+  --wood-deep: oklch(0.43 0.085 50);
+  --wood-groove: oklch(0.28 0.055 46);
   --gold: oklch(0.74 0.135 76);
   --gold-bright: oklch(0.9 0.1 86);
   --gold-glow: oklch(0.86 0.14 78);
@@ -163,63 +167,53 @@
 }
 
 /* ======================================================================
- * LUX FRAME — recessed plaster niche, gold LED strip, bronze side slats.
- * Markup: components/LuxFrame.tsx. Side set with data-slats="left|right".
+ * LUX FRAME — a niche cut into the plaster wall (no raised frame):
+ *   dark top soffit, bright lit sill across the full width, a plain lit
+ *   side return on one side, a fluted honey-wood slat panel on the other,
+ *   and a thin warm LED line running around the photo.
+ * Markup: components/LuxFrame.tsx. Slat side set with data-slats="left|right".
+ * Every size is in cqw of the figure, so proportions never change.
  * ====================================================================== */
 .lux-frame {
-  --lux-rim: clamp(7px, 1vw, 13px);
-  --lux-top: clamp(12px, 1.85vw, 24px);
-  --lux-bottom: clamp(14px, 2.3vw, 30px);
-  --lux-side: clamp(12px, 2vw, 26px);
-  --lux-slats: clamp(32px, 4.5vw, 58px);
+  --lux-ratio: 2.33;
+  --lux-top: 3.3cqw;     /* soffit depth   (~7.5% of height) */
+  --lux-sill: 2.8cqw;    /* sill depth     (~6.5% of height) */
+  --lux-slats: 7.6cqw;   /* slat panel width */
+  --lux-return: 0.7cqw;  /* plaster return outside the slats */
+  --lux-side: 4.4cqw;    /* plain side return width */
   --lux-glow: 1;
 
+  container-type: inline-size;
   position: relative;
   margin: 0;
-  padding: var(--lux-rim);
-  border-radius: 3px;
-  isolation: isolate;
-  background-color: var(--plaster-light);
-  background-image:
-    url("/textures/plaster.svg"),
-    linear-gradient(180deg, color-mix(in oklab, var(--plaster-light) 70%, white), var(--plaster-light) 30%, var(--plaster) 100%);
-  background-blend-mode: multiply, normal;
-  background-size: 420px 420px, 100% 100%;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--plaster-deep) 80%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 75%, transparent),
-    inset 0 -2px 3px color-mix(in oklab, var(--bronze) 22%, transparent),
-    var(--shadow-raised),
-    0 0 60px -18px color-mix(in oklab, var(--gold-glow) calc(40% * var(--lux-glow)), transparent);
-  transition: box-shadow 600ms ease, transform 600ms ease;
+  transition: filter 600ms ease;
 }
 
-/* raised lip highlight around the opening */
-.lux-frame::before {
+.lux-frame__opening {
+  position: relative;
+  aspect-ratio: var(--lux-ratio);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--plaster-deep);
+  /* crisp plaster edge of the cut-out, catching light */
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--plaster-light) 85%, white),
+    0 -1px 0 1px color-mix(in oklab, white 40%, transparent),
+    0 2px 2px 1px color-mix(in oklab, var(--plaster-shadow) 18%, transparent);
+}
+
+/* ambient occlusion where the wall lip meets the niche */
+.lux-frame__opening::after {
   content: "";
   position: absolute;
-  inset: calc(var(--lux-rim) - 3px);
-  border-radius: 2px;
+  inset: 0;
+  z-index: 6;
   pointer-events: none;
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
-    0 0 12px 1px color-mix(in oklab, var(--gold-glow) calc(45% * var(--lux-glow)), transparent);
-  z-index: 0;
+    inset 0 1.2cqw 1.1cqw -0.9cqw color-mix(in oklab, var(--bronze-deep) 55%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--plaster-shadow) 35%, transparent);
 }
 
-.lux-frame__niche {
-  position: relative;
-  aspect-ratio: var(--lux-ratio, 2.2 / 1);
-  overflow: hidden;
-  border-radius: 1px;
-  background: var(--plaster-deep);
-  z-index: 1;
-  box-shadow:
-    inset 0 2px 4px color-mix(in oklab, var(--bronze-deep) 45%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--bronze-deep) 30%, transparent);
-}
-
-/* Niche walls (bevelled depth) */
 .lux-wall {
   position: absolute;
   z-index: 1;
@@ -227,202 +221,181 @@
   background-size: 420px 420px, 100% 100%;
 }
 
+/* Soffit: in shadow at the lip, warmed by the LED just above the photo */
 .lux-wall--top {
   top: 0;
   height: var(--lux-top);
   background-image:
     url("/textures/plaster.svg"),
     linear-gradient(180deg,
-      color-mix(in oklab, var(--plaster-shadow) 85%, var(--plaster-deep)) 0%,
-      var(--plaster-deep) 35%,
-      color-mix(in oklab, var(--plaster) 60%, var(--gold-glow)) 100%);
+      color-mix(in oklab, var(--plaster-shadow) 62%, var(--plaster-deep)) 0%,
+      color-mix(in oklab, var(--plaster-shadow) 30%, var(--plaster-deep)) 40%,
+      color-mix(in oklab, var(--plaster-deep) 70%, var(--gold-glow)) 82%,
+      color-mix(in oklab, var(--plaster-light) 45%, var(--gold-glow)) 100%);
 }
 
-.lux-wall--bottom {
-  bottom: 0;
-  height: var(--lux-bottom);
-  background-image:
-    url("/textures/plaster.svg"),
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--gold-bright) 80%, var(--led-core)) 0%,
-      color-mix(in oklab, var(--plaster-light) 55%, var(--gold-bright)) 30%,
-      var(--plaster-light) 70%,
-      var(--plaster) 100%);
-}
-
+/* Plain side return: smooth plaster, lit warmer toward the photo */
 .lux-wall--side {
   top: 0;
-  bottom: 0;
+  bottom: var(--lux-sill);
   width: var(--lux-side);
 }
 
-/* Slats on the RIGHT */
+/* Sill: one bright ledge across the full width, front edge slightly shaded */
+.lux-wall--sill {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--lux-sill);
+  z-index: 4;
+  background-image:
+    url("/textures/plaster.svg"),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--led-core) 70%, var(--gold-bright)) 0%,
+      color-mix(in oklab, var(--plaster-light) 45%, var(--gold-bright)) 22%,
+      color-mix(in oklab, var(--plaster-light) 85%, var(--gold-bright)) 55%,
+      var(--plaster-light) 82%,
+      color-mix(in oklab, var(--plaster) 75%, var(--plaster-shadow)) 100%);
+}
+
+/* ---- slats on the LEFT, plain return on the RIGHT ---- */
+.lux-frame[data-slats="left"] .lux-wall--top {
+  left: var(--lux-slats);
+  right: 0;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--lux-side)) 100%, 0 100%);
+}
+.lux-frame[data-slats="left"] .lux-wall--side {
+  right: 0;
+  clip-path: polygon(0 var(--lux-top), 100% 0, 100% 100%, 0 100%);
+  background-image:
+    url("/textures/plaster.svg"),
+    linear-gradient(270deg,
+      color-mix(in oklab, var(--plaster) 80%, var(--plaster-shadow)) 0%,
+      var(--plaster-light) 45%,
+      color-mix(in oklab, var(--plaster-light) 62%, var(--gold-glow)) 100%);
+}
+.lux-frame[data-slats="left"] .lux-slats {
+  left: 0;
+  border-left: var(--lux-return) solid var(--plaster-light);
+}
+.lux-frame[data-slats="left"] .lux-window {
+  left: var(--lux-slats);
+  right: var(--lux-side);
+}
+
+/* ---- slats on the RIGHT, plain return on the LEFT ---- */
 .lux-frame[data-slats="right"] .lux-wall--top {
   left: 0;
   right: var(--lux-slats);
   clip-path: polygon(0 0, 100% 0, 100% 100%, var(--lux-side) 100%);
 }
-.lux-frame[data-slats="right"] .lux-wall--bottom {
-  left: 0;
-  right: var(--lux-slats);
-  clip-path: polygon(var(--lux-side) 0, 100% 0, 100% 100%, 0 100%);
-}
 .lux-frame[data-slats="right"] .lux-wall--side {
   left: 0;
-  clip-path: polygon(0 0, 100% var(--lux-top), 100% calc(100% - var(--lux-bottom)), 0 100%);
+  clip-path: polygon(0 0, 100% var(--lux-top), 100% 100%, 0 100%);
   background-image:
     url("/textures/plaster.svg"),
     linear-gradient(90deg,
-      color-mix(in oklab, var(--plaster-shadow) 55%, var(--plaster-deep)) 0%,
-      var(--plaster-deep) 40%,
-      color-mix(in oklab, var(--plaster) 55%, var(--gold-glow)) 100%);
+      color-mix(in oklab, var(--plaster) 80%, var(--plaster-shadow)) 0%,
+      var(--plaster-light) 45%,
+      color-mix(in oklab, var(--plaster-light) 62%, var(--gold-glow)) 100%);
 }
 .lux-frame[data-slats="right"] .lux-slats {
   right: 0;
+  border-right: var(--lux-return) solid var(--plaster-light);
 }
 .lux-frame[data-slats="right"] .lux-window {
-  left: var(--lux-side);
   right: var(--lux-slats);
+  left: var(--lux-side);
 }
 
-/* Slats on the LEFT */
-.lux-frame[data-slats="left"] .lux-wall--top {
-  right: 0;
-  left: var(--lux-slats);
-  clip-path: polygon(0 0, 100% 0, calc(100% - var(--lux-side)) 100%, 0 100%);
-}
-.lux-frame[data-slats="left"] .lux-wall--bottom {
-  right: 0;
-  left: var(--lux-slats);
-  clip-path: polygon(0 0, calc(100% - var(--lux-side)) 0, 100% 100%, 0 100%);
-}
-.lux-frame[data-slats="left"] .lux-wall--side {
-  right: 0;
-  clip-path: polygon(0 var(--lux-top), 100% 0, 100% 100%, 0 calc(100% - var(--lux-bottom)));
-  background-image:
-    url("/textures/plaster.svg"),
-    linear-gradient(270deg,
-      color-mix(in oklab, var(--plaster-shadow) 55%, var(--plaster-deep)) 0%,
-      var(--plaster-deep) 40%,
-      color-mix(in oklab, var(--plaster) 55%, var(--gold-glow)) 100%);
-}
-.lux-frame[data-slats="left"] .lux-slats {
-  left: 0;
-}
-.lux-frame[data-slats="left"] .lux-window {
-  right: var(--lux-side);
-  left: var(--lux-slats);
-}
-
-/* Vertical bronze/gold slats */
+/* ---- Fluted honey-wood slat panel ---- */
 .lux-slats {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: var(--lux-sill);
   width: var(--lux-slats);
   z-index: 2;
   display: flex;
-  gap: clamp(1.5px, 0.22vw, 3px);
-  padding-inline: clamp(1.5px, 0.2vw, 3px);
-  background: linear-gradient(180deg, var(--slat-gap), color-mix(in oklab, var(--slat-gap) 70%, var(--bronze-deep)) 50%, var(--slat-gap));
-  box-shadow:
-    inset 0 10px 12px -8px color-mix(in oklab, black 70%, transparent),
-    inset 0 -8px 10px -8px color-mix(in oklab, black 55%, transparent);
+  gap: 0.28cqw;
+  padding-inline: 0.2cqw;
+  background: var(--wood-groove);
 }
 
-/* LED spill onto the slats nearest the window */
+/* shade under the soffit lip + LED spill on the slats next to the photo */
 .lux-slats::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: calc(0.9 * var(--lux-glow));
+  z-index: 2;
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--wood-groove) 55%, transparent) 0%,
+    transparent 14%,
+    transparent 88%,
+    color-mix(in oklab, var(--gold-bright) 30%, transparent) 100%);
 }
-.lux-frame[data-slats="right"] .lux-slats::after {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--gold-glow) 45%, transparent), transparent 55%);
-}
-.lux-frame[data-slats="left"] .lux-slats::after {
-  background: linear-gradient(270deg, color-mix(in oklab, var(--gold-glow) 45%, transparent), transparent 55%);
-}
-
-.lux-slat {
-  --slat-a: var(--bronze);
-  --slat-b: color-mix(in oklab, var(--bronze) 55%, var(--gold));
-  --slat-c: var(--gold);
-  --slat-d: var(--gold-bright);
-  position: relative;
-  flex: 1 1 0;
-  border-radius: 1px;
-  background: linear-gradient(90deg,
-    var(--slat-a) 0%,
-    var(--slat-b) 14%,
-    var(--slat-c) 36%,
-    var(--slat-d) 50%,
-    var(--slat-c) 64%,
-    var(--slat-b) 86%,
-    var(--slat-a) 100%);
-  box-shadow:
-    1.5px 0 2px color-mix(in oklab, black 55%, transparent),
-    -1px 0 1px color-mix(in oklab, black 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, var(--led-core) 60%, transparent);
-}
-.lux-slat:nth-child(3n + 2) {
-  --slat-a: var(--bronze-deep);
-  --slat-b: var(--bronze);
-  --slat-c: color-mix(in oklab, var(--bronze) 45%, var(--gold));
-  --slat-d: color-mix(in oklab, var(--gold) 80%, var(--gold-bright));
-}
-.lux-slat:nth-child(3n) {
-  --slat-a: color-mix(in oklab, var(--bronze) 70%, var(--bronze-deep));
-  --slat-b: color-mix(in oklab, var(--bronze) 75%, var(--gold));
-  --slat-c: color-mix(in oklab, var(--gold) 80%, var(--bronze));
-}
-
-/* vertical light falloff + wood/metal grain */
-.lux-slat::after {
+.lux-slats::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--led-core) 40%, transparent) 0%,
-      transparent 18%,
-      transparent 65%,
-      color-mix(in oklab, black 45%, transparent) 100%),
-    repeating-linear-gradient(180deg,
-      transparent 0 7px,
-      color-mix(in oklab, var(--bronze-deep) 14%, transparent) 7px 8px);
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+  opacity: var(--lux-glow);
 }
-/* edge reflection */
-.lux-slat::before {
-  content: "";
-  position: absolute;
-  top: 4%;
-  bottom: 6%;
-  left: 38%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--led-core) 80%, transparent) 25%, color-mix(in oklab, var(--led-core) 35%, transparent) 75%, transparent);
-  z-index: 1;
+.lux-frame[data-slats="left"] .lux-slats::before {
+  background: linear-gradient(270deg, color-mix(in oklab, var(--gold-glow) 55%, transparent), transparent 40%);
+}
+.lux-frame[data-slats="right"] .lux-slats::before {
+  background: linear-gradient(90deg, color-mix(in oklab, var(--gold-glow) 55%, transparent), transparent 40%);
 }
 
-/* The illuminated picture window */
+.lux-slat {
+  position: relative;
+  flex: 1 1 0;
+  /* rounded flute: lit edge -> honey face -> shaded edge */
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0 9px,
+      color-mix(in oklab, var(--wood-deep) 10%, transparent) 9px 10px,
+      transparent 10px 23px),
+    linear-gradient(90deg,
+      var(--wood-light) 0%,
+      color-mix(in oklab, var(--wood-light) 55%, var(--wood)) 22%,
+      var(--wood) 55%,
+      color-mix(in oklab, var(--wood) 55%, var(--wood-deep)) 82%,
+      var(--wood-deep) 100%);
+  box-shadow:
+    0.15cqw 0 0.2cqw color-mix(in oklab, black 45%, transparent),
+    inset 0.08cqw 0 0 color-mix(in oklab, var(--led-core) 45%, transparent);
+}
+.lux-slat:nth-child(even) {
+  filter: brightness(0.93) saturate(1.05);
+}
+/* thin specular line along each flute */
+.lux-slat::after {
+  content: "";
+  position: absolute;
+  top: 6%;
+  bottom: 4%;
+  left: 18%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--led-core) 70%, transparent) 30%, color-mix(in oklab, var(--led-core) 45%, transparent) 80%, transparent);
+}
+
+/* ---- Photo with the integrated LED line ---- */
 .lux-window {
   position: absolute;
   top: var(--lux-top);
-  bottom: var(--lux-bottom);
+  bottom: var(--lux-sill);
   z-index: 3;
   overflow: hidden;
-  border-radius: 1px;
   background: var(--charcoal);
   box-shadow:
     0 0 0 1px var(--led-core),
-    0 0 0 2.5px color-mix(in oklab, var(--gold-bright) 95%, transparent),
-    0 0 0 4px color-mix(in oklab, var(--gold-glow) calc(70% * var(--lux-glow)), transparent),
-    0 0 10px 3px color-mix(in oklab, var(--gold-glow) calc(85% * var(--lux-glow)), transparent),
-    0 0 24px 7px color-mix(in oklab, var(--gold-glow) calc(55% * var(--lux-glow)), transparent),
-    0 0 46px 12px color-mix(in oklab, var(--gold) calc(32% * var(--lux-glow)), transparent);
+    0 0 0.25cqw 0.15cqw color-mix(in oklab, var(--gold-bright) 95%, transparent),
+    0 0 0.9cqw 0.25cqw color-mix(in oklab, var(--gold-glow) calc(80% * var(--lux-glow)), transparent),
+    0 0 2.2cqw 0.5cqw color-mix(in oklab, var(--gold-glow) calc(45% * var(--lux-glow)), transparent);
   transition: box-shadow 600ms ease;
 }
 
@@ -435,37 +408,36 @@
   transition: transform 1200ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 600ms ease;
 }
 
-/* inner LED bloom over the photo edges + glass sheen */
+/* warm LED haze bleeding into the photo edges, strongest along the top */
 .lux-window::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(118deg, color-mix(in oklab, white 12%, transparent) 0%, transparent 32%);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--gold-glow) calc(45% * var(--lux-glow)), transparent) 0%, transparent 9%),
+    linear-gradient(0deg, color-mix(in oklab, var(--gold-glow) 25%, transparent) 0%, transparent 5%);
   box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--led-core) 90%, transparent),
-    inset 0 0 12px 2px color-mix(in oklab, var(--gold-glow) calc(60% * var(--lux-glow)), transparent),
-    inset 0 0 38px 4px color-mix(in oklab, var(--gold-glow) calc(20% * var(--lux-glow)), transparent);
+    inset 0 0 0 1px color-mix(in oklab, var(--led-core) 95%, transparent),
+    inset 0 0 0.6cqw 0.1cqw color-mix(in oklab, var(--gold-glow) calc(70% * var(--lux-glow)), transparent),
+    inset 0 0 2cqw 0 color-mix(in oklab, var(--gold-glow) calc(22% * var(--lux-glow)), transparent);
 }
 
 .lux-frame:hover {
   --lux-glow: 1.15;
 }
 .lux-frame:hover .lux-window img {
-  transform: scale(1.045);
-  filter: saturate(1.06) brightness(1.03);
+  transform: scale(1.035);
+  filter: saturate(1.05) brightness(1.03);
 }
 
 @media (max-width: 640px) {
   .lux-frame {
-    --lux-rim: 6px;
-    --lux-top: 10px;
-    --lux-bottom: 12px;
-    --lux-side: 10px;
-    --lux-slats: 30px;
-  }
-  .lux-frame__niche {
-    aspect-ratio: var(--lux-ratio-mobile, 1.75 / 1);
+    --lux-ratio: 2;
+    --lux-top: 3.8cqw;
+    --lux-sill: 3.2cqw;
+    --lux-slats: 8.5cqw;
+    --lux-side: 4.8cqw;
   }
 }
 

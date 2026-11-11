@@ -1,7 +1,7 @@
 type LuxFrameProps = {
   src: string;
   alt: string;
-  /** Physical side of the frame that carries the vertical slats. */
+  /** Physical side of the niche that carries the wooden slat panel. */
   slats: "left" | "right";
   width?: number;
   height?: number;
@@ -11,8 +11,8 @@ type LuxFrameProps = {
 };
 
 /**
- * Recessed plaster niche with bevelled walls, an integrated gold LED strip
- * around the photo and a bank of bronze/gold vertical slats on one side.
+ * A niche cut into the plaster wall: shaded soffit, lit sill, plain side return,
+ * fluted wood slats on one side and a warm LED line around the photo.
  * All visuals live in the `.lux-*` classes in styles.css.
  */
 export function LuxFrame({
@@ -27,9 +27,8 @@ export function LuxFrame({
 }: LuxFrameProps) {
   return (
     <figure className={["lux-frame", className].filter(Boolean).join(" ")} data-slats={slats}>
-      <div className="lux-frame__niche">
+      <div className="lux-frame__opening">
         <span aria-hidden className="lux-wall lux-wall--top" />
-        <span aria-hidden className="lux-wall lux-wall--bottom" />
         <span aria-hidden className="lux-wall lux-wall--side" />
         <div aria-hidden className="lux-slats">
           {Array.from({ length: slatCount }, (_, i) => (
@@ -46,6 +45,7 @@ export function LuxFrame({
             decoding="async"
           />
         </div>
+        <span aria-hidden className="lux-wall lux-wall--sill" />
       </div>
     </figure>
   );
