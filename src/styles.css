@@ -76,6 +76,29 @@
   --niche-side-in: oklch(0.844 0.106 70.6);
   --niche-sill: oklch(0.917 0.06 80);
   --led-strip: oklch(0.928 0.101 92.3);
+  /* niche light & shadow, sampled from the reference photo */
+  --niche-crease: oklch(0.567 0.06 53.4);
+  --niche-soffit-dark: oklch(0.44 0.064 61.4);
+  --niche-soffit-warm: oklch(0.659 0.105 57.7);
+  --niche-soffit-glow: oklch(0.752 0.11 66.1);
+  --niche-soffit-led: oklch(0.867 0.082 77.2);
+  --niche-led-line: oklch(0.947 0.052 86.2);
+  --niche-return-led: oklch(0.913 0.073 84.4);
+  --niche-return-hot: oklch(0.846 0.104 70.7);
+  --niche-return-mid: oklch(0.828 0.091 65.5);
+  --niche-return-out: oklch(0.816 0.071 61.6);
+  --niche-return-edge: oklch(0.864 0.047 60.8);
+  --niche-sill-back: oklch(0.697 0.08 56.9);
+  --niche-sill-top: oklch(0.93 0.058 78.9);
+  --niche-sill-mid: oklch(0.901 0.061 70.1);
+  --niche-sill-lip: oklch(0.965 0.029 80.7);
+  --niche-jamb-crease: oklch(0.64 0.056 52.2);
+  --niche-jamb-out: oklch(0.705 0.066 57);
+  --niche-jamb-in: oklch(0.779 0.083 63.7);
+  --niche-cast: oklch(0.45 0.07 50);
+  --slat-edge: oklch(0.423 0.098 46.7);
+  --slat-face: oklch(0.66 0.104 59.1);
+  --slat-shadow: oklch(0.224 0.055 41.9);
   --gold: oklch(0.74 0.135 76);
   --gold-bright: oklch(0.9 0.1 86);
   --gold-glow: oklch(0.86 0.14 78);
@@ -175,20 +198,24 @@
 
 /* ======================================================================
  * LUX FRAME — a niche cut into the plaster wall (no raised frame):
- *   dark top soffit, bright lit sill across the full width, a plain lit
- *   side return on one side, a fluted honey-wood slat panel on the other,
- *   and a thin warm LED line running around the photo.
+ *   soffit with a dark crease under the lip, a sill ledge with a bright
+ *   front lip that casts a thin shadow on the wall below, a plain lit side
+ *   return, a plaster jamb + fluted wood slats on the other side, and a
+ *   thin warm LED line around the photo. Every inner wall carries the same
+ *   fine plaster grain as the wall. Colours/stops are sampled from the
+ *   reference photo.
  * Markup: components/LuxFrame.tsx. Slat side set with data-slats="left|right".
  * Every size is in cqw of the figure, so proportions never change.
  * ====================================================================== */
 .lux-frame {
   --lux-ratio: 2.33;
-  --lux-top: 3.3cqw;     /* soffit depth   (~7.5% of height) */
-  --lux-sill: 2.8cqw;    /* sill depth     (~6.5% of height) */
-  --lux-slats: 7.6cqw;   /* slat panel width */
-  --lux-return: 0.7cqw;  /* plaster return outside the slats */
-  --lux-side: 4.4cqw;    /* plain side return width */
+  --lux-top: 2.9cqw;     /* soffit depth */
+  --lux-sill: 3.5cqw;    /* sill ledge depth incl. front lip */
+  --lux-slats: 9cqw;     /* jamb + slat panel width */
+  --lux-return: 1.8cqw;  /* plaster jamb outside the slats */
+  --lux-side: 4.5cqw;    /* plain side return width */
   --lux-glow: 1;
+  --lux-grain: url("/textures/plaster-fine.svg");
 
   container-type: inline-size;
   position: relative;
@@ -202,48 +229,66 @@
   overflow: hidden;
   isolation: isolate;
   background: var(--plaster-deep);
-  /* crisp plaster edge of the cut-out, catching light */
-  box-shadow: 0 -1px 0 0 color-mix(in oklab, white 35%, transparent);
-}
-
-/* ambient occlusion where the wall lip meets the niche */
-.lux-frame__opening::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
   box-shadow:
-    inset 0 0.5cqw 0.6cqw -0.35cqw color-mix(in oklab, var(--bronze-deep) 45%, transparent);
+    /* crisp plaster edge of the cut-out catching light */
+    0 -1px 0 0 color-mix(in oklab, white 45%, transparent),
+    /* thin shadow the sill lip casts on the wall below */
+    0 0.25cqw 0.15cqw -0.05cqw color-mix(in oklab, var(--niche-cast) 34%, transparent),
+    0 0.6cqw 0.7cqw -0.2cqw color-mix(in oklab, var(--niche-cast) 16%, transparent);
 }
 
 .lux-wall {
   position: absolute;
   z-index: 1;
+  background-size: 260px 260px, 100% 100%, 100% 100%;
+  background-blend-mode: multiply, normal, normal;
 }
 
-/* Soffit: in shadow at the lip, warmed by the LED just above the photo */
+/* Soffit: lit lip, dark crease, brown shadow, warming to the LED line */
 .lux-wall--top {
   top: 0;
   height: var(--lux-top);
   background-image:
+    var(--lux-grain),
+    linear-gradient(90deg, transparent 0 82%, color-mix(in oklab, var(--niche-soffit-dark) 45%, transparent) 100%),
     linear-gradient(180deg,
-      var(--niche-lip) 0%,
-      color-mix(in oklab, var(--niche-lip) 40%, var(--niche-soffit)) 14%,
-      var(--niche-soffit) 34%,
-      var(--niche-soffit-lit) 72%,
-      color-mix(in oklab, var(--niche-soffit-lit) 45%, var(--gold-glow)) 90%,
-      color-mix(in oklab, var(--gold-glow) 70%, var(--led-strip)) 100%);
+      var(--plaster-light) 0%,
+      var(--plaster-light) 4%,
+      var(--niche-crease) 9%,
+      var(--niche-soffit-dark) 15%,
+      var(--niche-soffit) 26%,
+      var(--niche-soffit) 45%,
+      color-mix(in oklab, var(--niche-soffit) 50%, var(--niche-soffit-warm)) 55%,
+      var(--niche-soffit-warm) 66%,
+      var(--niche-soffit-glow) 78%,
+      var(--niche-soffit-led) 89%,
+      var(--niche-led-line) 100%);
 }
 
-/* Plain side return: smooth plaster, lit warmer toward the photo */
+/* Plain side return: LED-hot next to the photo, muted toward the wall,
+   a lit outer corner, darker under the soffit */
 .lux-wall--side {
   top: 0;
   bottom: var(--lux-sill);
   width: var(--lux-side);
+  background-image:
+    var(--lux-grain),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--niche-soffit-dark) 80%, transparent) 0%,
+      color-mix(in oklab, var(--niche-soffit-dark) 35%, transparent) 9%,
+      transparent 24%),
+    linear-gradient(var(--return-dir),
+      var(--niche-return-led) 0%,
+      color-mix(in oklab, var(--niche-return-led) 40%, var(--niche-return-hot)) 9%,
+      var(--niche-return-hot) 22%,
+      var(--niche-return-mid) 50%,
+      var(--niche-return-out) 80%,
+      var(--niche-return-edge) 92%,
+      var(--niche-return-edge) 97%,
+      var(--niche-return-out) 100%);
 }
 
-/* Sill: one bright ledge across the full width, front edge slightly shaded */
+/* Sill: LED spill, shaded back corner, bright top face, bright front lip */
 .lux-wall--sill {
   left: 0;
   right: 0;
@@ -251,34 +296,39 @@
   height: var(--lux-sill);
   z-index: 4;
   background-image:
+    var(--lux-grain),
+    linear-gradient(90deg, transparent, transparent),
     linear-gradient(180deg,
-      color-mix(in oklab, var(--led-strip) 80%, var(--gold-glow)) 0%,
-      color-mix(in oklab, var(--niche-sill) 70%, var(--gold-bright)) 20%,
-      var(--niche-sill) 50%,
-      var(--niche-sill) 88%,
-      color-mix(in oklab, var(--niche-sill) 70%, var(--niche-lip)) 100%);
+      color-mix(in oklab, var(--niche-sill-back) 30%, var(--niche-sill-top)) 0%,
+      var(--niche-sill-back) 22%,
+      var(--niche-sill-back) 32%,
+      color-mix(in oklab, var(--niche-sill-back) 40%, var(--niche-sill-top)) 42%,
+      var(--niche-sill-top) 52%,
+      var(--niche-sill-mid) 64%,
+      var(--niche-sill-mid) 80%,
+      color-mix(in oklab, var(--niche-sill-mid) 40%, var(--niche-sill-lip)) 87%,
+      var(--niche-sill-lip) 94%,
+      var(--niche-sill-lip) 100%);
 }
 
 /* ---- slats on the LEFT, plain return on the RIGHT ---- */
+.lux-frame[data-slats="left"] {
+  --slat-dir: 90deg;
+  --return-dir: 90deg;
+}
 .lux-frame[data-slats="left"] .lux-wall--top {
-  left: var(--lux-slats);
+  left: calc(var(--lux-slats) * 0.6);
   right: 0;
   clip-path: polygon(0 0, 100% 0, calc(100% - var(--lux-side)) 100%, 0 100%);
 }
 .lux-frame[data-slats="left"] .lux-wall--side {
   right: 0;
   clip-path: polygon(0 var(--lux-top), 100% 0, 100% 100%, 0 100%);
-  background-image:
-    linear-gradient(270deg,
-      color-mix(in oklab, var(--niche-side-out) 75%, var(--niche-lip)) 0%,
-      var(--niche-side-out) 35%,
-      var(--niche-side-in) 80%,
-      color-mix(in oklab, var(--niche-side-in) 60%, var(--led-strip)) 100%);
 }
 .lux-frame[data-slats="left"] .lux-slats {
   left: 0;
-  border-left: var(--lux-return) solid var(--niche-side-out);
-  --slat-dir: 90deg;
+  padding-left: calc(var(--lux-return) + 0.15cqw);
+  background-position: 0 0, left top, 0 0;
 }
 .lux-frame[data-slats="left"] .lux-window {
   left: var(--lux-slats);
@@ -286,32 +336,30 @@
 }
 
 /* ---- slats on the RIGHT, plain return on the LEFT ---- */
+.lux-frame[data-slats="right"] {
+  --slat-dir: 270deg;
+  --return-dir: 270deg;
+}
 .lux-frame[data-slats="right"] .lux-wall--top {
   left: 0;
-  right: var(--lux-slats);
+  right: calc(var(--lux-slats) * 0.6);
   clip-path: polygon(0 0, 100% 0, 100% 100%, var(--lux-side) 100%);
 }
 .lux-frame[data-slats="right"] .lux-wall--side {
   left: 0;
   clip-path: polygon(0 0, 100% var(--lux-top), 100% 100%, 0 100%);
-  background-image:
-    linear-gradient(90deg,
-      color-mix(in oklab, var(--niche-side-out) 75%, var(--niche-lip)) 0%,
-      var(--niche-side-out) 35%,
-      var(--niche-side-in) 80%,
-      color-mix(in oklab, var(--niche-side-in) 60%, var(--led-strip)) 100%);
 }
 .lux-frame[data-slats="right"] .lux-slats {
   right: 0;
-  border-right: var(--lux-return) solid var(--niche-side-out);
-  --slat-dir: 270deg;
+  padding-right: calc(var(--lux-return) + 0.15cqw);
+  background-position: 0 0, right top, 0 0;
 }
 .lux-frame[data-slats="right"] .lux-window {
   right: var(--lux-slats);
   left: var(--lux-side);
 }
 
-/* ---- Fluted honey-wood slat panel ---- */
+/* ---- Plaster jamb + fluted honey-wood slat panel ---- */
 .lux-slats {
   position: absolute;
   top: 0;
@@ -319,12 +367,28 @@
   width: var(--lux-slats);
   z-index: 2;
   display: flex;
-  gap: 0.3cqw;
+  gap: 0.28cqw;
   padding-inline: 0.15cqw;
-  background: var(--wood-groove);
+  padding-top: calc(var(--lux-top) * 0.5);
+  background-color: var(--wood-groove);
+  background-image:
+    var(--lux-grain),
+    /* plaster jamb: dark crease at the wall edge, warmer toward the slats */
+    linear-gradient(var(--slat-dir),
+      var(--niche-jamb-crease) 0%,
+      var(--niche-jamb-crease) 14%,
+      var(--niche-jamb-out) 28%,
+      color-mix(in oklab, var(--niche-jamb-out) 40%, var(--niche-jamb-in)) 55%,
+      var(--niche-jamb-in) 88%,
+      color-mix(in oklab, var(--niche-jamb-in) 70%, var(--wood-groove)) 100%),
+    /* soffit strip above the slats, in shadow */
+    linear-gradient(180deg, var(--niche-soffit-dark), var(--niche-soffit-dark));
+  background-size: 260px 260px, var(--lux-return) 100%, 100% calc(var(--lux-top) * 0.5);
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-blend-mode: multiply, normal, normal;
 }
 
-/* shade under the soffit lip + LED spill on the slats next to the photo */
+/* deep shadow under the soffit + LED spill near the sill */
 .lux-slats::after {
   content: "";
   position: absolute;
@@ -332,11 +396,14 @@
   pointer-events: none;
   z-index: 2;
   background: linear-gradient(180deg,
-    color-mix(in oklab, var(--wood-groove) 60%, transparent) 0%,
-    color-mix(in oklab, var(--wood-groove) 15%, transparent) 10%,
-    transparent 22%,
-    transparent 90%,
-    color-mix(in oklab, var(--gold-bright) 25%, transparent) 100%);
+    color-mix(in oklab, var(--slat-shadow) 55%, transparent) 0%,
+    color-mix(in oklab, var(--slat-shadow) 88%, transparent) 4%,
+    color-mix(in oklab, var(--slat-shadow) 70%, transparent) 9%,
+    color-mix(in oklab, var(--slat-shadow) 38%, transparent) 17%,
+    color-mix(in oklab, var(--slat-shadow) 12%, transparent) 28%,
+    transparent 40%,
+    transparent 86%,
+    color-mix(in oklab, var(--gold-bright) 18%, transparent) 100%);
 }
 .lux-slats::before {
   content: "";
@@ -348,40 +415,35 @@
   opacity: var(--lux-glow);
 }
 .lux-frame[data-slats="left"] .lux-slats::before {
-  background: linear-gradient(270deg, color-mix(in oklab, var(--led-strip) 70%, transparent), color-mix(in oklab, var(--gold-glow) 35%, transparent) 14%, transparent 42%);
+  background: linear-gradient(270deg, color-mix(in oklab, var(--led-strip) 75%, transparent), color-mix(in oklab, var(--gold-glow) 40%, transparent) 10%, color-mix(in oklab, var(--gold-glow) 12%, transparent) 24%, transparent 40%);
 }
 .lux-frame[data-slats="right"] .lux-slats::before {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--led-strip) 70%, transparent), color-mix(in oklab, var(--gold-glow) 35%, transparent) 14%, transparent 42%);
+  background: linear-gradient(90deg, color-mix(in oklab, var(--led-strip) 75%, transparent), color-mix(in oklab, var(--gold-glow) 40%, transparent) 10%, color-mix(in oklab, var(--gold-glow) 12%, transparent) 24%, transparent 40%);
 }
 
 .lux-slat {
   position: relative;
   flex: 1 1 0;
-  /* rounded flute: lit edge -> honey face -> shaded edge */
+  /* rounded flute: shaded edge -> honey crown -> shaded edge, crown leaning toward the photo */
   background:
-    repeating-linear-gradient(180deg,
-      transparent 0 9px,
-      color-mix(in oklab, var(--wood-deep) 10%, transparent) 9px 10px,
-      transparent 10px 23px),
     linear-gradient(var(--slat-dir, 90deg),
-      color-mix(in oklab, var(--wood-deep) 80%, var(--wood-groove)) 0%,
-      var(--wood-deep) 18%,
-      var(--wood) 55%,
-      color-mix(in oklab, var(--wood) 60%, var(--wood-light)) 82%,
-      var(--wood) 100%);
-  box-shadow:
-    0 0 0.15cqw 0.02cqw var(--wood-groove),
-    inset 0 0 0.1cqw color-mix(in oklab, var(--wood-groove) 40%, transparent);
+      color-mix(in oklab, var(--slat-edge) 75%, var(--wood-groove)) 0%,
+      var(--slat-edge) 10%,
+      color-mix(in oklab, var(--slat-edge) 45%, var(--slat-face)) 28%,
+      var(--slat-face) 50%,
+      color-mix(in oklab, var(--slat-face) 85%, var(--wood-light)) 62%,
+      color-mix(in oklab, var(--slat-face) 50%, var(--slat-edge)) 82%,
+      var(--slat-edge) 100%);
+  box-shadow: 0 0 0.12cqw 0.02cqw var(--wood-groove);
 }
-/* thin specular line along each flute */
+/* faint wood grain + soft highlight along the crown */
 .lux-slat::after {
   content: "";
   position: absolute;
-  top: 6%;
-  bottom: 4%;
-  left: 70%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--wood-light) 55%, transparent) 30%, color-mix(in oklab, var(--wood-light) 35%, transparent) 80%, transparent);
+  inset: 0;
+  background:
+    linear-gradient(var(--slat-dir, 90deg), transparent 52%, color-mix(in oklab, var(--wood-light) 30%, transparent) 60%, transparent 68%),
+    repeating-linear-gradient(180deg, transparent 0 11px, color-mix(in oklab, var(--slat-edge) 9%, transparent) 11px 12px, transparent 12px 29px);
 }
 
 /* ---- Photo with the integrated LED line ---- */
@@ -479,7 +541,4 @@
     clip-path: polygon(var(--cut) 0, calc(var(--cut) + 5px) 0, 5px 100%, 0 100%);
     filter: drop-shadow(0 0 6px var(--gold-glow));
   }
-}
-.lux-frame[data-slats="right"] .lux-slat::after {
-  left: 30%;
 }
