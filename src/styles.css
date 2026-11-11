@@ -61,7 +61,7 @@
   --radius: 0.25rem;
 
   /* Materials */
-  --plaster: oklch(0.935 0.038 60);
+  --plaster: oklch(0.93 0.04 62);
   --plaster-light: oklch(0.96 0.032 62);
   --plaster-deep: oklch(0.825 0.035 62);
   --plaster-shadow: oklch(0.6 0.04 62);
@@ -288,7 +288,7 @@
       var(--niche-return-out) 100%);
 }
 
-/* Sill: LED spill, shaded back corner, bright top face, bright front lip */
+/* Sill: LED spill at the back, bright smooth top face, lit front lip */
 .lux-wall--sill {
   left: 0;
   right: 0;
@@ -297,17 +297,15 @@
   z-index: 4;
   background-image:
     var(--lux-grain),
-    linear-gradient(90deg, transparent, transparent),
+    linear-gradient(180deg, color-mix(in oklab, var(--niche-sill-back) 55%, transparent) 0%, transparent 1px),
     linear-gradient(180deg,
-      color-mix(in oklab, var(--niche-sill-back) 30%, var(--niche-sill-top)) 0%,
-      var(--niche-sill-back) 22%,
-      var(--niche-sill-back) 32%,
-      color-mix(in oklab, var(--niche-sill-back) 40%, var(--niche-sill-top)) 42%,
-      var(--niche-sill-top) 52%,
-      var(--niche-sill-mid) 64%,
-      var(--niche-sill-mid) 80%,
-      color-mix(in oklab, var(--niche-sill-mid) 40%, var(--niche-sill-lip)) 87%,
-      var(--niche-sill-lip) 94%,
+      color-mix(in oklab, var(--niche-led-line) 60%, var(--niche-return-hot)) 0%,
+      color-mix(in oklab, var(--niche-sill-back) 45%, var(--niche-return-hot)) 18%,
+      color-mix(in oklab, var(--niche-return-hot) 50%, var(--niche-sill-top)) 34%,
+      var(--niche-sill-top) 50%,
+      var(--niche-sill-mid) 70%,
+      var(--niche-sill-mid) 82%,
+      var(--niche-sill-lip) 92%,
       var(--niche-sill-lip) 100%);
 }
 
@@ -457,8 +455,9 @@
   box-shadow:
     0 0 0 1px var(--led-core),
     0 0 0 0.2cqw color-mix(in oklab, var(--led-strip) 90%, transparent),
-    0 0 0.6cqw 0.2cqw color-mix(in oklab, var(--gold-glow) calc(80% * var(--lux-glow)), transparent),
-    0 0 1.6cqw 0.2cqw color-mix(in oklab, var(--gold-glow) calc(38% * var(--lux-glow)), transparent);
+    0 0 0.5cqw 0.25cqw color-mix(in oklab, var(--led-strip) calc(75% * var(--lux-glow)), transparent),
+    0 0 1.4cqw 0.4cqw color-mix(in oklab, var(--gold-glow) calc(55% * var(--lux-glow)), transparent),
+    0 0 3cqw 0.6cqw color-mix(in oklab, var(--gold-glow) calc(28% * var(--lux-glow)), transparent);
   transition: box-shadow 600ms ease;
 }
 
