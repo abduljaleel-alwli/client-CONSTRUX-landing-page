@@ -61,8 +61,8 @@
   --radius: 0.25rem;
 
   /* Materials */
-  --plaster: oklch(0.945 0.034 64);
-  --plaster-light: oklch(0.972 0.026 68);
+  --plaster: oklch(0.935 0.038 60);
+  --plaster-light: oklch(0.96 0.032 62);
   --plaster-deep: oklch(0.825 0.035 62);
   --plaster-shadow: oklch(0.6 0.04 62);
   --wood-light: oklch(0.77 0.135 63);
@@ -159,7 +159,7 @@
       radial-gradient(ellipse 50% 35% at 90% 70%, color-mix(in oklab, var(--gold-glow) 12%, transparent), transparent 70%),
       linear-gradient(180deg, var(--plaster-light), var(--plaster) 35%, color-mix(in oklab, var(--plaster) 70%, var(--plaster-deep)) 100%);
     background-blend-mode: multiply, multiply, normal, normal, normal;
-    background-size: 420px 420px, 640px 640px, 100% 100%, 100% 100%, 100% 100%;
+    background-size: 360px 360px, 640px 640px, 100% 100%, 100% 100%, 100% 100%;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
