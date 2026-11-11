@@ -479,7 +479,7 @@
 
 /* ---------- Hero diagonal charcoal panel ---------- */
 .hero-panel {
-  --cut: 36%;
+  --cut: 50%;
   clip-path: polygon(0 var(--cut), 100% calc(var(--cut) - 14%), 100% 100%, 0 100%);
 }
 .hero-panel > div:last-child {

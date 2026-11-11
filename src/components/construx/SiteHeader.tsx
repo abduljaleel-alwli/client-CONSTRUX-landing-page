@@ -19,14 +19,14 @@ export function BrandMark({ className = "" }: { className?: string }) {
 export function SiteHeader() {
   return (
     <header id="top" className="relative">
-      <div className="mx-auto flex h-[72px] max-w-[1320px] items-center justify-between px-[4vw] md:h-[84px]">
-        <nav aria-label="ניווט ראשי" className="flex items-center gap-4 sm:gap-8 md:gap-14">
+      <div className="mx-auto flex max-w-[1320px] flex-col-reverse items-center justify-between gap-1 px-[4vw] py-3 sm:h-[72px] sm:flex-row sm:py-0 md:h-[84px]">
+        <nav aria-label="ניווט ראשי" className="flex items-center gap-5 sm:gap-8 md:gap-14">
           {NAV.map((item) => (
             <a
               key={item.label}
               href={item.href}
               aria-current={"active" in item ? "page" : undefined}
-              className={`relative py-2 text-[13px] transition-colors sm:text-base md:text-lg ${
+              className={`relative whitespace-nowrap py-2 text-sm transition-colors sm:text-base md:text-lg ${
                 "active" in item
                   ? "font-extrabold text-foreground"
                   : "font-medium text-foreground/85 hover:text-bronze"

@@ -8,7 +8,7 @@ export function ProjectsHero() {
       aria-labelledby="hero-title"
       className="relative isolate overflow-hidden shadow-[var(--shadow-raised)]"
     >
-      <div className="relative h-[420px] sm:h-[340px] md:h-[clamp(300px,25vw,380px)]">
+      <div className="relative h-[500px] sm:h-[340px] md:h-[clamp(300px,25vw,380px)]">
         <img
           src={heroImage}
           alt="שלד בניין בבנייה עם עגורן צריח בשקיעה"
@@ -30,7 +30,7 @@ export function ProjectsHero() {
             <span className="gold-rule w-28" />
             <p className="max-w-[34rem] text-sm leading-relaxed text-charcoal-foreground/85 md:text-[17px]">
               מגוון פרויקטים בתחום הבנייה והגמר,
-              <br />
+              <br className="hidden sm:block" />
               בסטנדרטים גבוהים של איכות, בטיחות ועמידה בלוחות זמנים.
             </p>
           </div>
