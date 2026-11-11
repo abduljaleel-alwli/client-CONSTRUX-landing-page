@@ -18,7 +18,7 @@ export function ProjectRow({ project, index }: { project: Project; index: number
   const { Icon } = project;
 
   return (
-    <article className="grid items-center gap-8 md:grid-cols-[1.18fr_1fr] md:gap-[3.5vw]">
+    <article className="grid items-center gap-8 md:grid-cols-[1.32fr_1fr] md:gap-[3.5vw]">
       <div className={frameOnRight ? "md:order-1" : "md:order-2"}>
         <LuxFrame src={project.image} alt={project.imageAlt} slats={frameOnRight ? "right" : "left"} />
       </div>

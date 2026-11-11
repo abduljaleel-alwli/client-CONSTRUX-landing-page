@@ -71,7 +71,7 @@
   --led-core: oklch(0.97 0.05 90);
   --bronze: oklch(0.56 0.105 62);
   --bronze-deep: oklch(0.34 0.065 55);
-  --slat-gap: oklch(0.22 0.035 55);
+  --slat-gap: oklch(0.3 0.05 58);
   --charcoal: oklch(0.24 0.008 70);
   --charcoal-foreground: oklch(0.97 0.012 85);
   --ink: oklch(0.2 0.012 60);
@@ -167,11 +167,11 @@
  * Markup: components/LuxFrame.tsx. Side set with data-slats="left|right".
  * ====================================================================== */
 .lux-frame {
-  --lux-rim: clamp(6px, 0.85vw, 11px);
-  --lux-top: clamp(10px, 1.5vw, 19px);
-  --lux-bottom: clamp(12px, 1.85vw, 24px);
-  --lux-side: clamp(10px, 1.55vw, 20px);
-  --lux-slats: clamp(30px, 4vw, 50px);
+  --lux-rim: clamp(7px, 1vw, 13px);
+  --lux-top: clamp(12px, 1.85vw, 24px);
+  --lux-bottom: clamp(14px, 2.3vw, 30px);
+  --lux-side: clamp(12px, 2vw, 26px);
+  --lux-slats: clamp(32px, 4.5vw, 58px);
   --lux-glow: 1;
 
   position: relative;
@@ -347,8 +347,8 @@
 }
 
 .lux-slat {
-  --slat-a: var(--bronze-deep);
-  --slat-b: var(--bronze);
+  --slat-a: var(--bronze);
+  --slat-b: color-mix(in oklab, var(--bronze) 55%, var(--gold));
   --slat-c: var(--gold);
   --slat-d: var(--gold-bright);
   position: relative;
@@ -368,14 +368,15 @@
     inset 0 1px 0 color-mix(in oklab, var(--led-core) 60%, transparent);
 }
 .lux-slat:nth-child(3n + 2) {
-  --slat-a: color-mix(in oklab, var(--bronze-deep) 80%, black);
-  --slat-b: var(--bronze-deep);
-  --slat-c: var(--bronze);
-  --slat-d: color-mix(in oklab, var(--gold) 70%, var(--bronze));
+  --slat-a: var(--bronze-deep);
+  --slat-b: var(--bronze);
+  --slat-c: color-mix(in oklab, var(--bronze) 45%, var(--gold));
+  --slat-d: color-mix(in oklab, var(--gold) 80%, var(--gold-bright));
 }
 .lux-slat:nth-child(3n) {
-  --slat-b: color-mix(in oklab, var(--bronze) 70%, var(--gold));
-  --slat-c: color-mix(in oklab, var(--gold) 85%, var(--bronze));
+  --slat-a: color-mix(in oklab, var(--bronze) 70%, var(--bronze-deep));
+  --slat-b: color-mix(in oklab, var(--bronze) 75%, var(--gold));
+  --slat-c: color-mix(in oklab, var(--gold) 80%, var(--bronze));
 }
 
 /* vertical light falloff + wood/metal grain */

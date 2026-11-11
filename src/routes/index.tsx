@@ -89,7 +89,7 @@ function Index() {
         <section
           id="projects"
           aria-label="רשימת פרויקטים"
-          className="mx-auto flex max-w-[1320px] flex-col gap-14 px-[4vw] py-14 md:gap-[clamp(2.5rem,4vw,4rem)] md:py-[clamp(3rem,5vw,5rem)]"
+          className="mx-auto flex max-w-[1400px] flex-col gap-14 px-[3.5vw] py-14 md:gap-[clamp(2.5rem,4vw,4rem)] md:py-[clamp(3rem,5vw,5rem)]"
         >
           {PROJECTS.map((project, i) => (
             <ProjectRow key={project.title} project={project} index={i} />
