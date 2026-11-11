@@ -475,3 +475,34 @@
     transition: none;
   }
 }
+
+/* ---------- Hero diagonal charcoal panel ---------- */
+.hero-panel {
+  --cut: 36%;
+  clip-path: polygon(0 var(--cut), 100% calc(var(--cut) - 14%), 100% 100%, 0 100%);
+}
+.hero-panel > div:last-child {
+  justify-content: flex-end;
+  padding-bottom: 2rem;
+}
+.hero-panel__edge {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, var(--bronze), var(--gold-bright) 50%, var(--gold));
+  clip-path: polygon(0 var(--cut), 100% calc(var(--cut) - 14%), 100% calc(var(--cut) - 14% + 4px), 0 calc(var(--cut) + 4px));
+}
+@media (min-width: 640px) {
+  .hero-panel {
+    --cut: 22%;
+    clip-path: polygon(var(--cut) 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .hero-panel > div:last-child {
+    justify-content: center;
+    padding-bottom: 0;
+  }
+  .hero-panel__edge {
+    clip-path: polygon(var(--cut) 0, calc(var(--cut) + 5px) 0, 5px 100%, 0 100%);
+    filter: drop-shadow(0 0 6px var(--gold-glow));
+  }
+}
