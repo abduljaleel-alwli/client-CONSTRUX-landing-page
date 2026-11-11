@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- The site is Hebrew and right-to-left (`dir="rtl"` on `<html>`); use logical spacing (ps/pe) and remember the first grid/flex child renders on the right.
+- Every framed photo uses the reusable `LuxFrame` component, whose look lives only in the `.lux-*` classes in `src/styles.css`, so all frames stay identical.
