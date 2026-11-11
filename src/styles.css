@@ -61,8 +61,8 @@
   --radius: 0.25rem;
 
   /* Materials */
-  --plaster: oklch(0.895 0.036 64);
-  --plaster-light: oklch(0.935 0.03 68);
+  --plaster: oklch(0.945 0.034 64);
+  --plaster-light: oklch(0.972 0.026 68);
   --plaster-deep: oklch(0.825 0.035 62);
   --plaster-shadow: oklch(0.6 0.04 62);
   --wood-light: oklch(0.77 0.135 63);
