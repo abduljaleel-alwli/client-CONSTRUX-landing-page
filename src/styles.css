@@ -381,7 +381,7 @@
   bottom: 4%;
   left: 70%;
   width: 1px;
-  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--led-core) 70%, transparent) 30%, color-mix(in oklab, var(--led-core) 45%, transparent) 80%, transparent);
+  background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--wood-light) 55%, transparent) 30%, color-mix(in oklab, var(--wood-light) 35%, transparent) 80%, transparent);
 }
 
 /* ---- Photo with the integrated LED line ---- */
