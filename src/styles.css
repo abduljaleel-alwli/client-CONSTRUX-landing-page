@@ -220,8 +220,6 @@
 .lux-wall {
   position: absolute;
   z-index: 1;
-  background-blend-mode: multiply, normal;
-  background-size: 420px 420px, 100% 100%;
 }
 
 /* Soffit: in shadow at the lip, warmed by the LED just above the photo */
@@ -229,7 +227,6 @@
   top: 0;
   height: var(--lux-top);
   background-image:
-    url("/textures/plaster.svg"),
     linear-gradient(180deg,
       var(--niche-lip) 0%,
       color-mix(in oklab, var(--niche-lip) 40%, var(--niche-soffit)) 14%,
@@ -254,7 +251,6 @@
   height: var(--lux-sill);
   z-index: 4;
   background-image:
-    url("/textures/plaster.svg"),
     linear-gradient(180deg,
       color-mix(in oklab, var(--led-strip) 80%, var(--gold-glow)) 0%,
       color-mix(in oklab, var(--niche-sill) 70%, var(--gold-bright)) 20%,
@@ -273,7 +269,6 @@
   right: 0;
   clip-path: polygon(0 var(--lux-top), 100% 0, 100% 100%, 0 100%);
   background-image:
-    url("/textures/plaster.svg"),
     linear-gradient(270deg,
       color-mix(in oklab, var(--niche-side-out) 75%, var(--niche-lip)) 0%,
       var(--niche-side-out) 35%,
@@ -300,7 +295,6 @@
   left: 0;
   clip-path: polygon(0 0, 100% var(--lux-top), 100% 100%, 0 100%);
   background-image:
-    url("/textures/plaster.svg"),
     linear-gradient(90deg,
       color-mix(in oklab, var(--niche-side-out) 75%, var(--niche-lip)) 0%,
       var(--niche-side-out) 35%,
@@ -325,8 +319,8 @@
   width: var(--lux-slats);
   z-index: 2;
   display: flex;
-  gap: 0.2cqw;
-  padding-inline: 0.1cqw;
+  gap: 0.3cqw;
+  padding-inline: 0.15cqw;
   background: var(--wood-groove);
 }
 
@@ -375,7 +369,9 @@
       var(--wood) 55%,
       color-mix(in oklab, var(--wood) 60%, var(--wood-light)) 82%,
       var(--wood) 100%);
-  box-shadow: 0 0 0.12cqw color-mix(in oklab, var(--wood-groove) 80%, transparent);
+  box-shadow:
+    0 0 0.15cqw 0.02cqw var(--wood-groove),
+    inset 0 0 0.1cqw color-mix(in oklab, var(--wood-groove) 40%, transparent);
 }
 /* thin specular line along each flute */
 .lux-slat::after {
